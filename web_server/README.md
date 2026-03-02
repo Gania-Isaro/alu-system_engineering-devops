@@ -30,3 +30,22 @@ Installs Nginx on a server and configures it to return a page containing "Holber
 ```bash
 ./1-install_nginx_web_server
 ```
+
+## Working from WSL (Windows Subsystem for Linux)
+
+If you are using WSL to run these scripts, avoid common permission issues:
+
+### SSH Key Permissions
+SSH and SCP require strict permissions on private keys. If your key is on a Windows mount (e.g., `/mnt/c/Users/...`), you may need to copy it to your WSL home directory or use `chmod`:
+
+```bash
+# Copy key to WSL if needed
+cp /mnt/c/Users/isaro/path/to/key ~/my_key
+chmod 600 ~/my_key
+
+# Then run the script
+./0-transfer_file file.txt 52.70.87.10 ubuntu ~/my_key
+```
+
+### Line Endings
+These scripts use **LF** line endings. If you edit them in a Windows editor, ensure the editor is set to save as LF, not CRLF, to avoid `\r` errors in Bash.
