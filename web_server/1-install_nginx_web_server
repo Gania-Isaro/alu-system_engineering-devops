@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
-# Installs nginx server
+# Installs nginx server and serves "Holberton School"
 
-sudo apt-get update
-sudo apt-get -y install nginx
-sudo ufw allow 'Nginx HTTP'
+# Update packages and install nginx
+sudo apt update -y
+sudo apt install -y nginx
+
+# Allow HTTP traffic (if UFW is enabled)
+sudo ufw allow 'Nginx HTTP' || true
+
+# Serve Holberton School at /
 echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
+
+# Start Nginx
 sudo service nginx start
