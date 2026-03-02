@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Configures a new Ubuntu machine to install Nginx and serve a specific page
+
+# Update package information
+sudo apt-get update
+
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Configure root page
+echo "Holberton School" | sudo tee /var/www/html/index.html
+
+# Restart Nginx
+sudo service nginx restart
