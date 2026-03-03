@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
-# Configure Nginx redirection /redirect_me -> YouTube
+# Configure Nginx to redirect /redirect_me -> YouTube with 301
 
-# Install nginx
+# Exit immediately if a command fails
+set -e
+
+# Update and install nginx
 apt-get -y update
 apt-get -y install nginx
 
-# Insert redirect inside server block using sed
-sed -i "/listen 80 default_server;/a \
-    location /redirect_me {\n\
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\
-    }\n" /etc/nginx/sites-available/default
+# Make a backup of the default site
+cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
-# Restart nginx
-service nginx restart
+# Insert redirect only if it does not already exist
+if ! grep -q "location /redirect_me" /etc/nginx/sites-available/default; then
+    sed -i '/server_name _;/a \
+    \n    location /redirect_me {\n        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n    }' /etc/nginx/sites-available/default
+fi
+
+# Test nginx configuration
+nginx -t
+
+# Restart nginx to apply changes
+systemctl restart nginx
