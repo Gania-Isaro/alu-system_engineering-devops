@@ -1,18 +1,47 @@
 #!/usr/bin/env bash
-# Configures Nginx with a custom 404 page containing "Ceci n'est pas une page" and /redirect_me
+# Configures Nginx with a custom 404 page containing "Ceci n'est pas une page"
 
+# Update and install Nginx
 sudo apt-get update
 sudo apt-get -y install nginx
+
+# Allow HTTP through firewall
 sudo ufw allow 'Nginx HTTP'
 
-# Default index
+# Create default index page
 echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
 
 # Create custom 404 page
 echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
 
-# Add redirect rule and 404 page inside server block
-sudo sed -i '/server_name _;/a \\tlocation /redirect_me {\n\t\treturn 301 https://www.wilsonn.vercel.app;\n\t}\n\terror_page 404 /404.html;' /etc/nginx/sites-available/default
+# Overwrite default Nginx config to include redirect and custom 404
+sudo tee /etc/nginx/sites-available/default > /dev/null <<'EOF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-# Restart Nginx to apply changes
-sudo service nginx restart
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    # Redirect /redirect_me
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    # Serve files or fallback to 404
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Custom 404 page
+    error_page 404 /404.html;
+}
+EOF
+
+# Ensure script has correct permissions and Unix line endings
+sudo chmod +x /etc/nginx/sites-available/default
+
+# Restart Nginx
+sudo systemctl restart nginx
