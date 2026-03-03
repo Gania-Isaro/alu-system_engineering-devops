@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
-# Installs nginx server and serves "Holberton School"
+# Install Nginx and serve Holberton School at /
 
-# Update packages and install nginx
-sudo apt update -y
-sudo apt install -y nginx
+apt-get update -y
+apt-get install -y nginx
 
-# Allow HTTP traffic (if UFW is enabled)
-sudo ufw allow 'Nginx HTTP' || true
+echo "Holberton School" > /var/www/html/index.html
+chmod 644 /var/www/html/index.html
 
-# Serve Holberton School at /
-echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
-
-# Start Nginx
-sudo service nginx start
+service nginx start
