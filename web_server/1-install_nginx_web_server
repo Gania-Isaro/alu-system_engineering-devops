@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# Install Nginx and serve Holberton School at /
+# Install nginx and configure it to serve Holberton School
 
 apt-get update -y
 apt-get install -y nginx
 
 echo "Holberton School" > /var/www/html/index.html
-chmod 644 /var/www/html/index.html
 
-service nginx start
+service nginx restart
