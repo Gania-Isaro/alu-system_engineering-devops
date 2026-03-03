@@ -2,15 +2,15 @@
 # Configure Nginx redirection /redirect_me -> YouTube using sed
 
 # Install nginx
-apt-get -y update
-apt-get -y install nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
 
 # Insert redirect inside the default server block using sed
 # This adds multiple lines after the line "listen 80 default_server;"
-sed -i "/listen 80 default_server;/a \
+sudo sed -i "/listen 80 default_server;/a \
     location /redirect_me {\n\
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\
     }" /etc/nginx/sites-available/default
 
 # Restart nginx to apply changes
-service nginx restartscp
+sudo service nginx restart
