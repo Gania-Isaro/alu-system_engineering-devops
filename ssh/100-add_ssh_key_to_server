@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Adds the provided SSH public key to the server's authorized_keys
+
+PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNdtrNGtTXe5Tp1EJQop8mOSAuRGLjJ6DW4PqX4wId/Kawz35ESampIqHSOTJmbQ8UlxdJuk0gAXKk3Ncle4safGYqM/VeDK3LN5iAJxf4kcaxNtS3eVxWBE5iF3FbIjOqwxw5Lf5sRa5yXxA8HfWidhbIG5TqKL922hPgsCGABIrXRlfZYeC0FEuPWdr6smOElSVvIXthRWp9cr685KdCI+COxlj1RdVsvIo+zunmLACF9PYdjB2s96Fn0ocD3c5SGLvDOFCyvDojSAOyE70ebIElnskKsDTGwfT4P6jh9OBzTyQEIS2jOaE5RQq4IB4DsMhvbjDSQrP0MdCLgwkN"
+SERVER_IP="52.70.87.10"
+IDENTITY_FILE="~/.ssh/school"
+
+echo "Attempting to add SSH key to $SERVER_IP..."
+ssh -o StrictHostKeyChecking=no -i "$IDENTITY_FILE" ubuntu@$SERVER_IP "mkdir -p ~/.ssh && echo '$PUBLIC_KEY' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+
+if [ $? -eq 0 ]; then
+    echo "Successfully added the SSH key to the server."
+else
+    echo "Failed to add the SSH key. Please ensure your private key exists at $IDENTITY_FILE and you have the correct passphrase (try 'betty')."
+fi
