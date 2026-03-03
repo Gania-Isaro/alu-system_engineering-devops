@@ -5,11 +5,30 @@ PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNdtrNGtTXe5Tp1EJQop8mOSAuRGLj
 SERVER_IP="52.70.87.10"
 IDENTITY_FILE="~/.ssh/school"
 
+# Resolve home directory if ~ is used
+IDENTITY_FILE_EVAL=$(eval echo $IDENTITY_FILE)
+
+if [ ! -f "$IDENTITY_FILE_EVAL" ]; then
+    echo "Error: Private key not found at $IDENTITY_FILE_EVAL"
+    echo "Please ensure your 'school' private key is in your ~/.ssh directory."
+    exit 1
+fi
+
 echo "Attempting to add SSH key to $SERVER_IP..."
-ssh -o StrictHostKeyChecking=no -i "$IDENTITY_FILE" ubuntu@$SERVER_IP "mkdir -p ~/.ssh && echo '$PUBLIC_KEY' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+echo "When prompted for a passphrase, enter: betty"
+echo ""
+
+ssh -v -o StrictHostKeyChecking=no -i "$IDENTITY_FILE_EVAL" ubuntu@$SERVER_IP "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$PUBLIC_KEY' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
 
 if [ $? -eq 0 ]; then
-    echo "Successfully added the SSH key to the server."
+    echo ""
+    echo "SUCCESS: The SSH key has been added to the server."
+    echo "You can now request a new review on the ALU intranet."
 else
-    echo "Failed to add the SSH key. Please ensure your private key exists at $IDENTITY_FILE and you have the correct passphrase (try 'betty')."
+    echo ""
+    echo "FAILED: Could not add the SSH key."
+    echo "Troubleshooting steps:"
+    echo "1. Verify your server IP ($SERVER_IP) is correct and active."
+    echo "2. Ensure you are entering the correct passphrase ('betty')."
+    echo "3. Check if you can manually SSH into the server first."
 fi
