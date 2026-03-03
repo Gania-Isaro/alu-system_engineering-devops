@@ -41,7 +41,17 @@ Configures Nginx to redirect `/redirect_me` permanently (301) to a YouTube video
 ```
 
 
+### 4-not_found_page_404
+
+Configures Nginx to have a custom 404 page that returns the string "Ceci n'est pas une page".
+
+**Usage:**
+```bash
+./4-not_found_page_404
+```
+
 If you are using WSL to run these scripts, avoid common permission issues:
+
 
 ### SSH Key Permissions
 SSH and SCP require strict permissions on private keys. If your key is on a Windows mount (e.g., `/mnt/c/Users/...`), you may need to copy it to your WSL home directory or use `chmod`:
