@@ -31,7 +31,15 @@ Installs Nginx on a server and configures it to return a page containing "Holber
 ./1-install_nginx_web_server
 ```
 
-## Working from WSL (Windows Subsystem for Linux)
+### 3-redirection
+
+Configures Nginx to redirect `/redirect_me` permanently (301) to a YouTube video.
+
+**Usage:**
+```bash
+./3-redirection
+```
+
 
 If you are using WSL to run these scripts, avoid common permission issues:
 
