@@ -1,30 +1,13 @@
 #!/usr/bin/env bash
-# 3-redirection
-# Automatically install Nginx and configure /redirect_me to redirect permanently (301)
+# Configure Nginx to redirect /redirect_me permanently (301)
 
-# Exit immediately if a command fails
-set -e
-
-# Update packages
+# Update packages and install nginx
 apt-get update -y
-
-# Install Nginx
 apt-get install -y nginx
 
-# Ensure Nginx service is running
-systemctl enable nginx
-systemctl start nginx
+# Add redirection rule using rewrite for 301 redirection
+# The 'permanent' flag in Nginx rewrite performs a 301 redirect
+sed -i 's/server_name _;/server_name _;\n\trewrite ^\/redirect_me https:\/\/www.youtube.com\/watch?v=QH2-TGUlwu4 permanent;/' /etc/nginx/sites-available/default
 
-# Backup default site configuration
-cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
-
-# Use sed to append redirect to the server block
-sed -i '/server_name _;/a \\n\tlocation /redirect_me {\n\t\treturn 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\t}' /etc/nginx/sites-available/default
-
-# Test Nginx configuration
-nginx -t
-
-# Reload Nginx to apply changes
-systemctl reload nginx
-
-echo "Nginx is configured. /redirect_me now returns a 301 redirect."
+# Restart Nginx to apply changes
+service nginx restart
