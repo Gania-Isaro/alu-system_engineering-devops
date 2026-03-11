@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 # Installs and configures HAProxy on a new Ubuntu machine
-
 apt-get update -y
 apt-get install -y haproxy
-
 cat > /etc/haproxy/haproxy.cfg <<EOF
 global
 	log /dev/log	local0
@@ -33,11 +31,7 @@ backend nodes
 	mode http
 	balance roundrobin
 	option forwardfor
-	http-request set-header X-Forwarded-Port %[dst_port]
-	http-request add-header X-Forwarded-Proto https if { ssl_fc }
-	option httpchk HEAD / HTTP/1.1\r\nHost:localhost
-	server 7011-web-01 52.70.87.10:80 check
-	server 7011-web-02 3.93.218.74:80 check
+	server web-01 52.70.87.10:80 check
+	server web-02 3.93.218.74:80 check
 EOF
-
 service haproxy restart
