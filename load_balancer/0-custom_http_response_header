@@ -2,16 +2,9 @@
 # Configures Nginx with a custom HTTP response header
 # shellcheck disable=SC2154
 
-# Set hostname (Checker requirement)
-# For web-01: sudo hostnamectl set-hostname 67000-web-01
-# For web-02: sudo hostnamectl set-hostname 67000-web-02
-
 apt-get update -y
 apt-get install -y nginx
 
-# Add custom header to the default site configuration
-# We use sed to append the 'add_header' directive after the 'listen 80 default_server;' line.
-# Note: $hostname is used as an Nginx variable.
 sed -i '/listen 80 default_server;/a \	add_header X-Served-By $hostname;' /etc/nginx/sites-available/default
 
 service nginx restart

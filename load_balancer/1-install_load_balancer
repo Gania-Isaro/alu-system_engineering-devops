@@ -4,8 +4,6 @@
 apt-get update -y
 apt-get install -y haproxy
 
-# Configure HAProxy
-# Use a heredoc to create a complete configuration file
 cat > /etc/haproxy/haproxy.cfg <<EOF
 global
 	log /dev/log	local0
@@ -42,5 +40,4 @@ backend nodes
 	server 7011-web-02 3.93.218.74:80 check
 EOF
 
-# Ensure HAProxy can be managed via an init script (starts it and enables it)
 service haproxy restart
