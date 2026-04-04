@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Runs whoami as the user passed as an argument.
+# Using su with -s to ensure a shell (/bin/bash) is available regardless of the user's login shell.
+su -s /bin/bash "$1" -c whoami

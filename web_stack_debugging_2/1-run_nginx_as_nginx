@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Configures Nginx to run as the nginx user and listen on port 8080.
+
+# Create nginx user if it doesn't exist
+id nginx > /dev/null 2>&1 || useradd --no-create-home --shell /bin/false nginx
+
+# Set nginx user in nginx.conf
+sed -i 's/^user .*/user nginx;/' /etc/nginx/nginx.conf
+
+# Update listen port to 8080 in site configs
+sed -i 's/listen 80/listen 8080/g' /etc/nginx/sites-available/default
+sed -i 's/listen 80/listen 8080/g' /etc/nginx/sites-enabled/default
+
+# Fix log directory ownership
+chown -R nginx /var/log/nginx
+
+# Restart nginx
+nginx -s stop 2>/dev/null; sleep 1
+nginx

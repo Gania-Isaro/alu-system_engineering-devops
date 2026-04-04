@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Adds the provided SSH public key to the server's authorized_keys
+
+PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNdtrNGtTXe5Tp1EJQop8mOSAuRGLjJ6DW4PqX4wId/Kawz35ESampIqHSOTJmbQ8UlxdJuk0gAXKk3Ncle4safGYqM/VeDK3LN5iAJxf4kcaxNtS3eVxWBE5iF3FbIjOqwxw5Lf5sRa5yXxA8HfWidhbIG5TqKL922hPgsCGABIrXRlfZYeC0FEuPWdr6smOElSVvIXthRWp9cr685KdCI+COxlj1RdVsvIo+zunmLACF9PYdjB2s96Fn0ocD3c5SGLvDOFCyvDojSAOyE70ebIElnskKsDTGwfT4P6jh9OBzTyQEIS2jOaE5RQq4IB4DsMhvbjDSQrP0MdCLgwkN"
+SERVER_IP="52.70.87.10"
+IDENTITY_FILE="~/.ssh/school"
+
+# Resolve home directory if ~ is used
+IDENTITY_FILE_EVAL=$(eval echo $IDENTITY_FILE)
+
+if [ ! -f "$IDENTITY_FILE_EVAL" ]; then
+    echo "Error: Private key not found at $IDENTITY_FILE_EVAL"
+    echo "Please ensure your 'school' private key is in your ~/.ssh directory."
+    exit 1
+fi
+
+echo "Attempting to add SSH key to $SERVER_IP..."
+echo "When prompted for a passphrase, enter: betty"
+echo ""
+
+ssh -v -o StrictHostKeyChecking=no -i "$IDENTITY_FILE_EVAL" ubuntu@$SERVER_IP "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '$PUBLIC_KEY' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "SUCCESS: The SSH key has been added to the server."
+    echo "You can now request a new review on the ALU intranet."
+else
+    echo ""
+    echo "FAILED: Could not add the SSH key."
+    echo "Troubleshooting steps:"
+    echo "1. Verify your server IP ($SERVER_IP) is correct and active."
+    echo "2. Ensure you are entering the correct passphrase ('betty')."
+    echo "3. Check if you can manually SSH into the server first."
+fi
